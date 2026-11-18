@@ -1,6 +1,12 @@
 {
   "name": "Agent Orchestration: Build Your AI Dream Team",
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {"version": "lts"},
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/ruby:1": {}
+  },
   "waitFor": "postCreateCommand",
   "postCreateCommand": "bash .devcontainer/postCreate.sh",
   "postStartCommand": "true",
