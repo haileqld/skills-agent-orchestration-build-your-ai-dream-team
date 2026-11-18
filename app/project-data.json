@@ -1,0 +1,32 @@
+{
+  "projects": [
+    {
+      "name": "Atlas Website",
+      "owner": "Maya Chen",
+      "status": "Active",
+      "recentActivity": "Homepage accessibility review completed today",
+      "priority": "High"
+    },
+    {
+      "name": "Beacon Mobile",
+      "owner": "Jordan Lee",
+      "status": "At Risk",
+      "recentActivity": "Beta feedback is being triaged after yesterday's release",
+      "priority": "High"
+    },
+    {
+      "name": "Cirrus Analytics",
+      "owner": "Priya Shah",
+      "status": "In Progress",
+      "recentActivity": "Quarterly usage dashboard updated this week",
+      "priority": "Medium"
+    },
+    {
+      "name": "Delta Integrations",
+      "owner": "Alex Morgan",
+      "status": "On Track",
+      "recentActivity": "Partner API test suite passed last Friday",
+      "priority": "Low"
+    }
+  ]
+}

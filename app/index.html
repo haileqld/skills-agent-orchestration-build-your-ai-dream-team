@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="dashboard">
+      <h1>Project Pulse</h1>
+      <p id="loading-state" role="status">Loading projects...</p>
+      <p id="error-state" role="alert" hidden></p>
+      <section id="project-list" aria-label="Projects"></section>
+    </main>
+
+    <script>
+      const loadingState = document.getElementById("loading-state");
+      const errorState = document.getElementById("error-state");
+      const projectList = document.getElementById("project-list");
+
+      function cssHook(value) {
+        return String(value)
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "") || "unknown";
+      }
+
+      function createProjectCard(project) {
+        const card = document.createElement("article");
+        card.className = "project-card";
+
+        const name = document.createElement("h2");
+        name.textContent = project.name;
+
+        const owner = document.createElement("p");
+        const ownerLabel = document.createElement("span");
+        ownerLabel.textContent = "Owner: ";
+        owner.append(ownerLabel, document.createTextNode(project.owner));
+
+        const status = document.createElement("p");
+        status.className = "status status-" + cssHook(project.status);
+        status.textContent = "Status: " + project.status;
+
+        const recentActivity = document.createElement("p");
+        const activityLabel = document.createElement("span");
+        activityLabel.textContent = "Recent activity: ";
+        recentActivity.append(activityLabel, document.createTextNode(project.recentActivity));
+
+        const priority = document.createElement("p");
+        priority.className = "priority priority-" + cssHook(project.priority);
+        priority.textContent = "Priority: " + project.priority;
+
+        card.append(name, owner, status, recentActivity, priority);
+        return card;
+      }
+
+      async function loadProjects() {
+        loadingState.hidden = false;
+        errorState.hidden = true;
+
+        try {
+          const response = await fetch("./project-data.json");
+          if (!response.ok) {
+            throw new Error("Could not load project data (HTTP " + response.status + ").");
+          }
+
+          const data = await response.json();
+          if (!data || !Array.isArray(data.projects)) {
+            throw new Error("Project data is malformed: expected a projects array.");
+          }
+
+          projectList.replaceChildren();
+
+          if (data.projects.length === 0) {
+            const emptyState = document.createElement("p");
+            emptyState.textContent = "No projects to display.";
+            projectList.append(emptyState);
+            return;
+          }
+
+          let renderedCount = 0;
+          for (const project of data.projects) {
+            if (!project ||
+                typeof project.name !== "string" ||
+                typeof project.owner !== "string" ||
+                typeof project.status !== "string" ||
+                typeof project.recentActivity !== "string" ||
+                typeof project.priority !== "string") {
+              continue;
+            }
+
+            projectList.append(createProjectCard(project));
+            renderedCount += 1;
+          }
+
+          if (renderedCount === 0) {
+            const emptyState = document.createElement("p");
+            emptyState.textContent = "No valid project records to display.";
+            projectList.append(emptyState);
+          }
+        } catch (error) {
+          errorState.textContent = "Unable to load the dashboard: " + error.message;
+          errorState.hidden = false;
+        } finally {
+          loadingState.hidden = true;
+        }
+      }
+
+      loadProjects();
+    </script>
+  </body>
+</html>
